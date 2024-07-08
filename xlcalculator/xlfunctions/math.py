@@ -2,14 +2,14 @@ import decimal
 import math
 from typing import Tuple, Union
 
-import numpy as np
-import pandas as pd
-from scipy.special import factorial2
+# import numpy as np
+# import pandas as pd
+# from scipy.special import factorial2
 
 from . import xl, xlerrors, xlcriteria, func_xltypes
 
 # Testing Hook
-rand = np.random.rand
+# rand = np.random.rand
 
 
 @xl.register()
@@ -25,93 +25,93 @@ def ABS(
     return abs(number)
 
 
-@xl.register()
-@xl.validate_args
-def ACOS(
-        number: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns the arccosine, or inverse cosine, of a number.
+# @xl.register()
+# @xl.validate_args
+# def ACOS(
+#         number: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns the arccosine, or inverse cosine, of a number.
 
-    https://support.office.com/en-us/article/
-        acos-function-cb73173f-d089-4582-afa1-76e5524b5d5b
-    """
-    return np.arccos(float(number))
-
-
-@xl.register()
-@xl.validate_args
-def ACOSH(
-        number: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns the inverse hyperbolic cosine of a number.
-
-    https://support.office.com/en-us/article/
-        acosh-function-e3992cc1-103f-4e72-9f04-624b9ef5ebfe
-    """
-    if number < 1:
-        raise xlerrors.NameExcelError(f'number {number} must be greater'
-                                      f'than or equal to 1')
-
-    return np.arccosh(float(number))
+#     https://support.office.com/en-us/article/
+#         acos-function-cb73173f-d089-4582-afa1-76e5524b5d5b
+#     """
+#     return np.arccos(float(number))
 
 
-@xl.register()
-@xl.validate_args
-def ASIN(
-        number: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns the arcsine, or inverse sine, of a number.
+# @xl.register()
+# @xl.validate_args
+# def ACOSH(
+#         number: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns the inverse hyperbolic cosine of a number.
 
-    https://support.office.com/en-us/article/
-        asin-function-81fb95e5-6d6f-48c4-bc45-58f955c6d347
-    """
-    if number < -1 or number > 1:
-        raise xlerrors.NumExcelError(f'number {number} must be less than '
-                                     f'or equal to -1 or greater ot equal '
-                                     f'to 1')
+#     https://support.office.com/en-us/article/
+#         acosh-function-e3992cc1-103f-4e72-9f04-624b9ef5ebfe
+#     """
+#     if number < 1:
+#         raise xlerrors.NameExcelError(f'number {number} must be greater'
+#                                       f'than or equal to 1')
 
-    return np.arcsin(float(number))
-
-
-@xl.register()
-@xl.validate_args
-def ASINH(
-        number: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns the inverse hyperbolic sine of a number.
-
-    https://support.office.com/en-us/article/
-        asinh-function-4e00475a-067a-43cf-926a-765b0249717c
-    """
-    return np.arcsinh(float(number))
+#     return np.arccosh(float(number))
 
 
-@xl.register()
-@xl.validate_args
-def ATAN(
-        number: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns the arctangent, or inverse tangent, of a number.
+# @xl.register()
+# @xl.validate_args
+# def ASIN(
+#         number: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns the arcsine, or inverse sine, of a number.
 
-    https://support.office.com/en-us/article/
-        atan-function-50746fa8-630a-406b-81d0-4a2aed395543
-    """
-    return np.arctan(float(number))
+#     https://support.office.com/en-us/article/
+#         asin-function-81fb95e5-6d6f-48c4-bc45-58f955c6d347
+#     """
+#     if number < -1 or number > 1:
+#         raise xlerrors.NumExcelError(f'number {number} must be less than '
+#                                      f'or equal to -1 or greater ot equal '
+#                                      f'to 1')
+
+#     return np.arcsin(float(number))
 
 
-@xl.register()
-@xl.validate_args
-def ATAN2(
-        x_num: func_xltypes.XlNumber,
-        y_num: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns the arctangent, or inverse tangent, of the specified
-        x- and y-coordinates.
+# @xl.register()
+# @xl.validate_args
+# def ASINH(
+#         number: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns the inverse hyperbolic sine of a number.
 
-    https://support.office.com/en-us/article/
-        atan2-function-c04592ab-b9e3-4908-b428-c96b3a565033
-    """
-    return np.arctan2(float(x_num), float(y_num))
+#     https://support.office.com/en-us/article/
+#         asinh-function-4e00475a-067a-43cf-926a-765b0249717c
+#     """
+#     return np.arcsinh(float(number))
+
+
+# @xl.register()
+# @xl.validate_args
+# def ATAN(
+#         number: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns the arctangent, or inverse tangent, of a number.
+
+#     https://support.office.com/en-us/article/
+#         atan-function-50746fa8-630a-406b-81d0-4a2aed395543
+#     """
+#     return np.arctan(float(number))
+
+
+# @xl.register()
+# @xl.validate_args
+# def ATAN2(
+#         x_num: func_xltypes.XlNumber,
+#         y_num: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns the arctangent, or inverse tangent, of the specified
+#         x- and y-coordinates.
+
+#     https://support.office.com/en-us/article/
+#         atan2-function-c04592ab-b9e3-4908-b428-c96b3a565033
+#     """
+#     return np.arctan2(float(x_num), float(y_num))
 
 
 @xl.register()
@@ -123,49 +123,22 @@ def CEILING(
     """Returns number rounded up, away from zero, to the nearest multiple of
         significance.
 
-    https://support.office.com/en-us/article/
-        ceiling-function-0a5cd7c8-0720-4f0a-bd2c-c943e510899f
+    https://support.office.com/en-us/article/ceiling-function-0a5cd7c8-0720-4f0a-bd2c-c943e510899f
     """
-
     if significance == 0:
         return 0
-
     if significance < 0 < number:
         raise xlerrors.NumExcelError('significance below zero and number \
                                       above zero is not allowed')
+    
+    # Convert numbers to Decimal for precise arithmetic
+    num = decimal.Decimal(str(number))
+    sig = decimal.Decimal(str(significance))
 
-    number = float(number)
-    significance = float(significance)
+    # Calculate the ceiling value
+    result = (num / sig).to_integral_value(rounding=decimal.ROUND_CEILING) * sig
 
-    ceiling = significance * math.ceil(number / significance)
-
-    # If number is an exact multiple of significance, no rounding occurs
-    if (number % significance) == 0:
-        return ceiling
-
-    quantize_multiplier = str(significance % 1)
-
-    # If number is negative, and significance is negative, the value is
-    # rounded down, away from zero.
-    if number < 0 and significance < 0:
-        result = decimal.Decimal(ceiling)
-        result = result.quantize(decimal.Decimal(quantize_multiplier),
-                                 rounding=decimal.ROUND_DOWN)
-        return float(result)
-
-    # If number is negative, and significance is positive, the value is
-    # rounded up towards zero.
-    if number < 0 < significance:
-        result = decimal.Decimal(ceiling)
-        result = result.quantize(decimal.Decimal(quantize_multiplier),
-                                 rounding=decimal.ROUND_UP)
-        return float(result)
-
-    # Regardless of the sign of number, a value is rounded up when adjusted
-    # away from zero.
-    result = decimal.Decimal(ceiling)
-    result = result.quantize(decimal.Decimal(quantize_multiplier),
-                             rounding=decimal.ROUND_UP)
+    # Convert result back to float
     return float(result)
 
 
@@ -179,7 +152,9 @@ def COS(
     https://support.office.com/en-us/article/
         cos-function-0fb808a5-95d6-4553-8148-22aebdce5f05
     """
-    return np.cos(float(number))
+    # JOEL mod
+    # return np.cos(float(number))
+    return math.cos(float(number))
 
 
 @xl.register()
@@ -192,20 +167,22 @@ def COSH(
     https://support.office.com/en-us/article/
         cosh-function-e460d426-c471-43e8-9540-a57ff3b70555
     """
-    return np.cosh(float(number))
+    # JOEL mod
+    # return np.cosh(float(number))
+    return math.cosh(float(number))
 
 
-@xl.register()
-@xl.validate_args
-def DEGREES(
-        angle: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Converts radians into degrees.
+# @xl.register()
+# @xl.validate_args
+# def DEGREES(
+#         angle: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Converts radians into degrees.
 
-    https://support.office.com/en-us/article/
-        degrees-function-4d6ec4db-e694-4b94-ace0-1cc3f61f9ba1
-    """
-    return np.degrees(float(angle))
+#     https://support.office.com/en-us/article/
+#         degrees-function-4d6ec4db-e694-4b94-ace0-1cc3f61f9ba1
+#     """
+#     return np.degrees(float(angle))
 
 
 @xl.register()
@@ -238,7 +215,9 @@ def EXP(
     https://support.office.com/en-us/article/
         exp-function-c578f034-2c45-4c37-bc8c-329660a63abe
     """
-    return np.exp(float(number))
+    # JOEL mod
+    # return np.exp(float(number))
+    return math.exp(float(number))
 
 
 @xl.register()
@@ -257,20 +236,20 @@ def FACT(
     return math.factorial(int(number))
 
 
-@xl.register()
-@xl.validate_args
-def FACTDOUBLE(
-        number: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns the double factorial of a number.
+# @xl.register()
+# @xl.validate_args
+# def FACTDOUBLE(
+#         number: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns the double factorial of a number.
 
-    https://support.office.com/en-us/article/
-        factdouble-function-e67697ac-d214-48eb-b7b7-cce2589ecac8
-    """
-    if number < 0:
-        raise xlerrors.NumExcelError('Negative values are not allowed')
+#     https://support.office.com/en-us/article/
+#         factdouble-function-e67697ac-d214-48eb-b7b7-cce2589ecac8
+#     """
+#     if number < 0:
+#         raise xlerrors.NumExcelError('Negative values are not allowed')
 
-    return factorial2(int(number), exact=True)
+#     return factorial2(int(number), exact=True)
 
 
 @xl.register()
@@ -351,7 +330,9 @@ def LOG10(
     https://support.office.com/en-us/article/
         log10-function-c75b881b-49dd-44fb-b6f4-37e3486a0211
     """
-    return np.log10(float(number))
+    # JOEL mod
+    # return np.log10(float(number))
+    return math.log10(float(number))
 
 
 @xl.register()
@@ -368,30 +349,30 @@ def MOD(
     return number % divisor
 
 
-@xl.register()
-@xl.validate_args
-def RAND() -> func_xltypes.XlNumber:
-    """RAND returns an evenly distributed random real number greater than or
-        equal to 0 and less than 1.
+# @xl.register()
+# @xl.validate_args
+# def RAND() -> func_xltypes.XlNumber:
+#     """RAND returns an evenly distributed random real number greater than or
+#         equal to 0 and less than 1.
 
-    https://support.office.com/en-us/article/
-        rand-function-4cbfa695-8869-4788-8d90-021ea9f5be73
-    """
-    return rand()
+#     https://support.office.com/en-us/article/
+#         rand-function-4cbfa695-8869-4788-8d90-021ea9f5be73
+#     """
+#     return rand()
 
 
-@xl.register()
-@xl.validate_args
-def RANDBETWEEN(
-        bottom: func_xltypes.XlNumber,
-        top: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Returns a random integer number between the numbers you specify.
+# @xl.register()
+# @xl.validate_args
+# def RANDBETWEEN(
+#         bottom: func_xltypes.XlNumber,
+#         top: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Returns a random integer number between the numbers you specify.
 
-    https://support.office.com/en-us/article/
-        randbetween-function-4cc7f0d1-87dc-4eb7-987f-a469ab381685
-    """
-    return int(rand() * (top - bottom) + bottom)
+#     https://support.office.com/en-us/article/
+#         randbetween-function-4cc7f0d1-87dc-4eb7-987f-a469ab381685
+#     """
+#     return int(rand() * (top - bottom) + bottom)
 
 
 @xl.register()
@@ -417,20 +398,24 @@ def POWER(
     https://support.office.com/en-us/article/
         power-function-d3f2908b-56f4-4c3f-895a-07fb519c362a
     """
-    return np.power(number, power)
+    # return np.power(number, power)
+    if number.value == 0:
+        return 0
+    
+    return math.pow(number.value, power.value)
 
 
-@xl.register()
-@xl.validate_args
-def RADIANS(
-        angle: func_xltypes.XlNumber
-) -> func_xltypes.XlNumber:
-    """Converts degrees to radians.
+# @xl.register()
+# @xl.validate_args
+# def RADIANS(
+#         angle: func_xltypes.XlNumber
+# ) -> func_xltypes.XlNumber:
+#     """Converts degrees to radians.
 
-    https://support.office.com/en-us/article/
-        radians-function-ac409508-3d48-45f5-ac02-1497c92de5bf
-    """
-    return np.radians(float(angle))
+#     https://support.office.com/en-us/article/
+#         radians-function-ac409508-3d48-45f5-ac02-1497c92de5bf
+#     """
+#     return np.radians(float(angle))
 
 
 def _round(number, num_digits, _rounding=decimal.ROUND_HALF_UP):
@@ -494,7 +479,12 @@ def SIGN(
     https://support.office.com/en-us/article/
         sign-function-109c932d-fcdc-4023-91f1-2dd0e916a1d8
     """
-    return np.sign(float(number))
+    # JOEL mod
+    # return np.sign(float(number))
+    if (number==0): 
+        return 0
+    else: 
+        return float(number)/abs(float(number))
 
 
 @xl.register()
@@ -507,7 +497,9 @@ def SIN(
     https://support.office.com/en-us/article/
         sin-function-cf0e3432-8b9e-483c-bc55-a76651c95602
     """
-    return float(np.sin(float(number)))
+    # JOEL mod
+    # return float(np.sin(float(number)))
+    return float(math.sin(float(number)))
 
 
 @xl.register()
@@ -552,6 +544,8 @@ def SUM(
     https://support.office.com/en-us/article/
         sum-function-043e1c7d-7726-4e80-8f32-07b23e057f89
     """
+    # print(f"SUM(Numbers):\n{numbers}")
+
     # If no non numeric cells, return zero (is what excel does)
     if len(numbers) == 0:
         return 0
@@ -578,6 +572,7 @@ def SUMIF(
 
     if sum_range is None:
         sum_range = range
+
 
     range = range.flat
     sum_range = sum_range.cast_to_numbers().flat
@@ -633,35 +628,38 @@ def SUMIFS(
     ])
 
 
+
+
 @xl.register()
 @xl.validate_args
-def SUMPRODUCT(
+def PRODUCT(
         *arrays: Tuple[func_xltypes.XlArray]
 ) -> func_xltypes.XlNumber:
     """Returns the sum of the products of corresponding arrays or arrays.
 
     https://support.office.com/en-us/article/
-        sumproduct-function-16753e75-9f68-4874-94ac-4d2145a2fd2e
+        product-function-16753e75-9f68-4874-94ac-4d2145a2fd2e
     """
-    if len(arrays) == 0:
-        raise xlerrors.NullExcelError('Not enough arguments for function.')
-
-    array1_shape = arrays[0].shape
-    if array1_shape == (0, 0):
-        return 0
-
+    result = 1
     for array in arrays:
-        array_shape = array.shape
-        if array1_shape != array_shape:
-            raise xlerrors.ValueExcelError(
-                f"The shapes of the arrays do not match. Looking "
-                f"for {array1_shape} but given array has {array_shape}")
-        if any(filter(xlerrors.ExcelError.is_error, xl.flatten(array))):
-            raise xlerrors.NaExcelError(
-                "Excel Errors are present in the sumproduct items.")
-
-    sumproduct = pd.concat(arrays, axis=1)
-    return sumproduct.prod(axis=1).sum()
+        if isinstance(array, (list, tuple)):
+            for child in array:
+                if isinstance(child, (list, tuple)):
+                    for number in child:
+                        print(number)
+                        if isinstance(number.value, (int, float)):
+                            result *= number
+                else:
+                    print(number)
+                    if isinstance(number.value, (int, float)):
+                        result *= number
+        elif isinstance(array.value, (int, float)):
+            print(array)
+            result *= array
+            
+    # result = math.prod(flat_list)
+    print(F"PRODUCT() result: {result}")
+    return result
 
 
 @xl.register()
@@ -674,7 +672,9 @@ def TAN(
     https://support.office.com/en-us/article/
         tan-function-08851a40-179f-4052-b789-d7f699447401
     """
-    return float(np.tan(float(number)))
+    # JOEL mod
+    # return float(np.tan(float(number)))
+    return float(math.tan(float(number)))
 
 
 @xl.register()

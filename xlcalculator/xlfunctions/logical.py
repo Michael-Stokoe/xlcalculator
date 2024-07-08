@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 from . import xl, xlerrors, func_xltypes
 
@@ -83,6 +83,24 @@ def IF(
 
 @xl.register()
 @xl.validate_args
+def IFERROR(
+        logical_test: func_xltypes.XlExpr,
+        value_if_error: func_xltypes.XlExpr = True,
+):
+    """Return the given value if the logical test results in an error, otherwise return the results of the logicalß test.
+
+    https://support.microsoft.com/en-us/office/
+        iferror-function-c526fd07-caeb-47b8-8bb6-63f3e417f611
+    """
+    # Use delayed evaluation to only evaluate the true or false value but not
+    # both.
+    result = value_if_error() if isinstance(logical_test(), xlerrors.ExcelError) else logical_test()
+    print(f"IFERROR result: {result}")
+    return result
+
+
+@xl.register()
+@xl.validate_args
 def NOT(logical: func_xltypes.XlExpr) -> func_xltypes.XlBoolean:
     """Return inverse of boolean representation of value.
 
@@ -101,3 +119,63 @@ def TRUE() -> func_xltypes.XlBoolean:
         true-function-7652c6e3-8987-48d0-97cd-ef223246b3fb
     """
     return True
+
+@xl.register()
+@xl.validate_args
+def IFS(*args: Tuple[Union[func_xltypes.XlExpr, func_xltypes.XlAnything]]) -> func_xltypes.XlAnything:
+    """Checks whether one or more conditions are met and returns a value corresponding to the first TRUE condition.
+
+    Args:
+        *args: Variable number of arguments representing the conditions and corresponding values.
+
+    Returns:
+        The value corresponding to the first TRUE condition.
+
+    Raises:
+        xlerrors.ValueExcelError: If the condition is not a boolean value.
+        xlerrors.NaExcelError: If none of the conditions are met.
+
+    Reference:
+    - https://support.office.com/en-gb/f1/topic/36329a26-37b2-467c-972b-4a39bd951d45
+    """
+    for i in range(0, len(args), 2):
+        if result := args[i]():
+            # print(f"result: {result in [True, False]}")
+            if result and result in [True, False]:
+                return args[i+1]()
+            else: # result is not a True or False value
+                print("Error: IFS condition did not result in a boolean value.")
+                return xlerrors.ValueExcelError("Condition is not a boolean value.")
+    print("Error: No IFS conditions resulted in a True value.")
+    return xlerrors.NaExcelError()
+
+
+
+
+# @xl.register()
+# @xl.validate_args
+# def IFS(
+#     logical_test: func_xltypes.XlExpr,
+#     value_if_true: func_xltypes.XlAnything,
+#     *ifsList: Tuple[Union[
+#         func_xltypes.XlExpr, func_xltypes.XlAnything
+#     ]]
+# ) -> func_xltypes.XlAnything:
+#     """Checks whether one or more conditions are met and returns a value corresponding to the first TRUE condition..
+
+#     https://support.office.com/en-gb/f1/topic/36329a26-37b2-467c-972b-4a39bd951d45
+#     """
+
+#     print(f'if list: {ifsList}')
+
+#     if logical_test():
+#         print(f"logical_test: {logical_test()}")
+#         return value_if_true()
+#     else:
+#         for item in ifsList:
+#             print(f"item: {item}")
+#             if item[0]():
+#                 return item[1]()
+
+#         return xlerrors.ValueExcelError("No true conditions found.")
+

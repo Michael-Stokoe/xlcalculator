@@ -528,6 +528,12 @@ class ExcelParser(ExcelParserTokens):
                 offset += 1
                 continue
 
+            # absolute references
+            if (currentChar() == "$"):
+                # print("$$$ Dropping a $$$")
+                offset += 1
+                continue
+
             # token accumulation
             token += currentChar()
             offset += 1

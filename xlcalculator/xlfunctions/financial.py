@@ -1,9 +1,9 @@
 
 from typing import Tuple
 
-import pandas as pd
-import numpy_financial as npf
-from scipy.optimize import newton
+# import pandas as pd
+# import numpy_financial as npf
+# from scipy.optimize import newton
 
 from . import xl, xlerrors, func_xltypes
 

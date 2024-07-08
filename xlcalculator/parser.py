@@ -153,8 +153,9 @@ class FormulaParser:
                         expr += token.tvalue
 
                         depth = 0
-
-                        if token.tvalue[1:] in ['OFFSET', 'INDEX']:
+                        
+                        # Joel 2024-06-03
+                        if token.tvalue[1:] in ['OFFSET', 'INDEX', 'INDIRECT']:
                             for t in tokens[(index + 1):]:
                                 if t.tsubtype == 'start':
                                     depth += 1
@@ -205,6 +206,9 @@ class FormulaParser:
                     were_values.append(True)
 
             elif token.ttype == "function":
+                if token.tvalue == "INDIRECT":
+                    print(f"function TOKEN: {token.tvalue} ") # TODO -- potentially raise errors for functions we don't accept.
+
                 stack.append(token)
                 arg_count.append(0)
 

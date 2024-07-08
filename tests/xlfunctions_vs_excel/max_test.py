@@ -13,3 +13,5 @@ class MaxTest(testing.FunctionalTestCase):
         excel_value = self.evaluator.get_cell_value('Sheet1!B1')
         value = self.evaluator.evaluate('Sheet1!B1')
         self.assertEqual(excel_value, value)
+
+        

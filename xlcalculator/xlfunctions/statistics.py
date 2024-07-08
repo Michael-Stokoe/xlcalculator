@@ -50,6 +50,7 @@ def COUNTA(*values):
 
     https://support.office.com/en-us/article/
         counta-function-7dc98875-d5c1-46f1-9a82-53f3219e2509
+
     """
     values = xl.flatten(values)
     if not len(values) or values[0] is None:
@@ -116,6 +117,7 @@ def COUNTIFS(
     )
 
 
+
 @xl.register()
 @xl.validate_args
 def MAX(*numbers: Tuple[func_xltypes.Number]):
@@ -125,10 +127,18 @@ def MAX(*numbers: Tuple[func_xltypes.Number]):
         max-function-e0012414-9ac8-4b34-9a47-73e662c08098
     """
     # If no non numeric cells, return zero (is what excel does)
-    if len(numbers) < 1:
+    # numbers = xl.flatten(numbers)
+
+    num_list = list(filter(func_xltypes.Number.is_type, numbers))
+
+    if len(num_list) < 1:
         return 0
 
-    return max(filter(func_xltypes.Number.is_type, numbers))
+    if len(num_list) == 1:
+        return num_list[0]
+
+    return max(num_list)
+    # return max(filter(func_xltypes.Number.is_type, numbers))
 
 
 @xl.register()
@@ -140,7 +150,39 @@ def MIN(*numbers: Tuple[func_xltypes.Number]):
         min-function-61635d12-920f-4ce2-a70f-96f202dcc152
     """
     # If no non numeric cells, return zero (is what excel does)
-    if len(numbers) < 1:
+
+    num_list = list(filter(func_xltypes.Number.is_type, numbers))
+
+    if len(num_list) < 1:
         return 0
 
-    return min(filter(func_xltypes.Number.is_type, numbers))
+    if len(num_list) == 1:
+        return num_list[0]
+
+    return min(num_list)
+
+
+@xl.register()
+@xl.validate_args
+def SMALL(countRange: func_xltypes.XlArray,
+          k: func_xltypes.Number):
+    """
+    This function takes in an array and a number "k" and returns the k-th smallest number in the array.
+    https://support.microsoft.com/en-us/office/small-function-17da8222-7c82-42b2-961b-14c45384df07
+
+    If array is empty, SMALL returns the #NUM! error value.
+    If k ≤ 0 or if k exceeds the number of data points, SMALL returns the #NUM! error value.    
+
+    """
+    countRange_flat = countRange.flat
+    # print(f"l: {countRange_flat}")
+    numbers = [num for num in countRange_flat if func_xltypes.Number.is_type(num)]
+    if len(numbers) == 0:
+        return xlerrors.NumExcelError()
+    if k <= 0 or k > len(numbers):
+        return xlerrors.NumExcelError()
+    # print(f"numbers: {numbers}")
+    else:
+        sorted_numbers = sorted(numbers, key=lambda num: float(num))
+        return sorted_numbers[int(k) - 1]
+    

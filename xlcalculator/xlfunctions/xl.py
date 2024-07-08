@@ -54,7 +54,9 @@ def _validate(vtype, val, name):
     if getattr(vtype, '__origin__', None) in [list, tuple]:
         itype = vtype.__args__[0]
         if itype != func_xltypes.XlArray:
+            # print(f"Val: {val}")
             val = flatten(val)
+            # print(f"Val (Flattened): {val}")
         return tuple(filter(
             lambda x: x is not None,
             [_safe_validate(itype, item, name) for item in val]
@@ -80,13 +82,14 @@ def _safe_validate(vtype, val, name):
 
 
 def validate_args(func):
-
     @functools.wraps(func)
     def validate(*args, **kw):
         sig = inspect.signature(func)
         bound = sig.bind(*args, **kw)
+
         # 1. Convert all input parameters to Excel Types.
         for pname, value in list(bound.arguments.items()):
+            # print(f"PName: {pname}, Value: {value}")
             if isinstance(value, xlerrors.ExcelError):
                 return value
             try:
@@ -109,6 +112,7 @@ def validate_args(func):
 
 def flatten(values):
     """Fully recursive flattening."""
+    # print(f"Flatten PRE: {values}")
     flat = []
     if isinstance(values, func_xltypes.Array):
         values = values.flat
@@ -119,6 +123,7 @@ def flatten(values):
             flat.extend(flatten(value))
         else:
             flat.append(value)
+    # print(f"Flatten POST: {flat}")
     return flat
 
 

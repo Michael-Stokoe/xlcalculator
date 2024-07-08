@@ -84,13 +84,13 @@ setuptools.setup(
     ],
     install_requires=[
         'jsonpickle',
-        'numpy',
-        'pandas',
+        # 'numpy',
+        # 'pandas',
         'openpyxl',
-        'numpy-financial',
+        # 'numpy-financial',
         'yearfrac>=0.4.8',
         'mock',
-        'scipy'
+        # 'scipy'
     ],
     extras_require=dict(
         test=TESTS_REQUIRE,

@@ -25,10 +25,15 @@ class Reader():
         ranges = {}
         for sheet_name in self.book.sheetnames:
             if sheet_name in ignore_sheets:
+                print(f"IGNORING sheet: {sheet_name}")
                 continue
+            else:
+                print(f"Loading sheet: {sheet_name}")
             sheet = self.book[sheet_name]
             for cell in sheet._cells.values():
                 addr = f'{sheet_name}!{cell.coordinate}'
+
+
                 if cell.data_type == 'f':
                     value = cell.value
                     if isinstance(

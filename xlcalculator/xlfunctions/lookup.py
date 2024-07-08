@@ -39,8 +39,13 @@ def VLOOKUP(
     https://support.office.com/en-us/article/
         vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1
     """
-    if range_lookup:
-        raise NotImplementedError("Excact match only supported at the moment.")
+    print(f"lookup_value: {lookup_value}")
+    print(f"table_array: {len(table_array)}") # TODO: Toggle detail vs length logging
+    print(f"col_index_num: {col_index_num}")
+    print(f"range_lookup: {range_lookup}")
+    # if range_lookup:
+
+    #     raise NotImplementedError("Exact match only supported at the moment.")
 
     col_index_num = int(col_index_num)
 
@@ -48,13 +53,75 @@ def VLOOKUP(
         raise xlerrors.ValueExcelError(
             'col_index_num is greater than the number of cols in table_array')
 
-    table_array = table_array.set_index(0)
+    if range_lookup:
+        closest_match = None
+        input_val_is_num = False
+        if func_xltypes.Number.is_type(lookup_value):
+            input_val = float(lookup_value)
+            input_val_is_num = True        
+        for index, row in enumerate(table_array):
+            print(f"{index}. row[0]: {row[0]}")
+            if func_xltypes.Number.is_type(row[0]):
+                row_val = float(row[0])
 
-    if lookup_value not in table_array.index:
-        raise xlerrors.NaExcelError(
-            '`lookup_value` not in first column of `table_array`.')
+                # COMPARING NUMBERS
+                if input_val_is_num:
+                    print(f"Comparing as numbers: input_val: {input_val} vs row_val: {row_val}")
+                    if input_val == row_val:
+                        print(f"Returning exact match: {row[col_index_num - 1]}")
+                        return row[col_index_num - 1]
+                    if index == 0 and input_val < row_val:
+                        print(f"Lookup value smaller than all values in table_array.")   
+                        raise xlerrors.NaExcelError('No match found. Lookup value smaller than all values in table_array.')
+                    if row_val < input_val:
+                        print(f"Setting closest_match to current row.")
+                        closest_match = row
+                        continue
+                else:
+                    print("skipping row because we can't compare numbers and text")
+                    continue
+            else:
+                print("skipping row because we can't compare numbers and text")
+                continue
 
-    return table_array.loc[lookup_value].values[0]
+            # COMPARING TEXT
+            if not input_val_is_num:
+                print(f"Comparing as test: input_val: {input_val} vs row_val: {row_val}")
+                if row[0] == lookup_value:
+                    print(f"Returning exact match: {row[col_index_num - 1]}")
+                    return row[col_index_num - 1]
+                if index == 0 and lookup_value < row[0]:
+                    print(f"Lookup value smaller than all values in table_array.")
+                    raise xlerrors.NaExcelError('No match found. Lookup value smaller than all values in table_array.')
+                if lookup_value > row[0]:
+                    print(f"Setting closest_match to current row.")
+                    closest_match = row
+
+        if closest_match:
+            print(f"Returning closest match: {closest_match[col_index_num - 1]}")
+            return closest_match[col_index_num - 1]
+        else:
+            print(f"Could not find values to compare to in the table_array. Are you comparing numbers to text?")
+            raise xlerrors.NaExcelError('No match found. Could not find values to compare to in the table_array. Are you comparing numbers to text?')
+    else:
+        compare = lookup_value.__eq__
+        try:
+            result = max(row for row in table_array if row and row[0] and compare(row[0]))
+            result = result[col_index_num - 1]
+            print(f"Vlookup result for {lookup_value} in column {col_index_num} is: {result}")
+        except ValueError:
+            print(f"Vlookup result for {lookup_value} in column {col_index_num} is: None")
+            raise xlerrors.NaExcelError(
+                '`lookup_value` not in first column of `table_array`.')
+        return result
+
+    # table_array = table_array.set_index(0)
+
+    # if lookup_value not in table_array.index:
+        # raise xlerrors.NaExcelError(
+        #     '`lookup_value` not in first column of `table_array`.')
+
+    # return table_array.loc[lookup_value].values[0]
 
 
 @xl.register()
@@ -64,7 +131,7 @@ def MATCH(
         lookup_array: func_xltypes.XlArray,
         match_type: func_xltypes.XlAnything = 1,
 ) -> func_xltypes.XlAnything:
-    assert len(lookup_array.values[0]) == 1
+    # assert len(lookup_array.values[0]) == 1
 
     lookup_array = lookup_array.flat
 
@@ -91,3 +158,17 @@ def MATCH(
                 "No greater value found."
             )
     return xlerrors.NaExcelError("No match found.")
+
+
+@xl.register()
+@xl.validate_args
+def INDIRECT(
+        indirect_address_text: func_xltypes.XlText
+) -> func_xltypes.XlExpr:
+    print(f"INDIRECT function called with: {indirect_address_text}")
+    if "!" not in str(indirect_address_text):
+        return xlerrors.NaExcelError("Invalid excel cell address provided.")
+    val =  indirect_address_text()
+    return val
+
+

@@ -1,5 +1,8 @@
 
 import logging
+
+# from xlcalculator import xlcalculator
+
 from xlcalculator import ModelCompiler
 from xlcalculator import Model
 from xlcalculator import Evaluator
@@ -10,13 +13,13 @@ json_file_name = r'use_case_01.json'
 
 filename = r'use_case_01.xlsm'
 compiler = ModelCompiler()
-new_model = compiler.read_and_parse_archive(filename, build_code=False)
+new_model = compiler.read_and_parse_archive(filename, build_code=True)
 new_model.persist_to_json_file(json_file_name)
 
-reconstituted_model = Model()
-reconstituted_model.construct_from_json_file(json_file_name, build_code=True)
+# reconstituted_model = Model()
+# reconstituted_model.construct_from_json_file(json_file_name, build_code=True)
 
-evaluator = Evaluator(reconstituted_model)
+evaluator = Evaluator(new_model)
 val1 = evaluator.evaluate('First!A2')
 print("value 'evaluated' for First!A2 without a formula:", val1)
 val2 = evaluator.evaluate('Seventh!C1')

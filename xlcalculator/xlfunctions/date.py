@@ -1,5 +1,5 @@
 import datetime
-import yearfrac
+# import yearfrac
 from dateutil.relativedelta import relativedelta
 from dateutil import rrule
 
@@ -341,45 +341,45 @@ def YEAR(
 
     return int(date.strftime("%Y"))
 
+# JOEL mod
+# @xl.register()
+# @xl.validate_args
+# def YEARFRAC(
+#         start_date: func_xltypes.XlDateTime,
+#         end_date: func_xltypes.XlDateTime,
+#         basis: func_xltypes.XlNumber = 0
+# ) -> func_xltypes.XlNumber:
+#     """Returns the fraction of the year represented by the number of whole
+#     days between two dates.
 
-@xl.register()
-@xl.validate_args
-def YEARFRAC(
-        start_date: func_xltypes.XlDateTime,
-        end_date: func_xltypes.XlDateTime,
-        basis: func_xltypes.XlNumber = 0
-) -> func_xltypes.XlNumber:
-    """Returns the fraction of the year represented by the number of whole
-    days between two dates.
+#     https://support.office.com/en-us/article/
+#         yearfrac-function-3844141e-c76d-4143-82b6-208454ddc6a8
+#     """
+#     if start_date < utils.EXCEL_EPOCH:
+#         raise xlerrors.ValueExcelError(
+#             f'start_date {start_date} must be after {utils.EXCEL_EPOCH}')
 
-    https://support.office.com/en-us/article/
-        yearfrac-function-3844141e-c76d-4143-82b6-208454ddc6a8
-    """
-    if start_date < utils.EXCEL_EPOCH:
-        raise xlerrors.ValueExcelError(
-            f'start_date {start_date} must be after {utils.EXCEL_EPOCH}')
+#     if end_date < utils.EXCEL_EPOCH:
+#         raise xlerrors.ValueExcelError(
+#             f'start_date {start_date} must be after {utils.EXCEL_EPOCH}')
 
-    if end_date < utils.EXCEL_EPOCH:
-        raise xlerrors.ValueExcelError(
-            f'start_date {start_date} must be after {utils.EXCEL_EPOCH}')
+#     # Switch dates if start_date > end_date
+#     if start_date > end_date:
+#         start_date, end_date = end_date, start_date
 
-    # Switch dates if start_date > end_date
-    if start_date > end_date:
-        start_date, end_date = end_date, start_date
+#     # Get Python internal types.
+#     start_date, end_date = start_date.value, end_date.value
 
-    # Get Python internal types.
-    start_date, end_date = start_date.value, end_date.value
+#     if basis == 0:  # US 30/360
+#         return yearfrac.yearfrac(start_date, end_date, '30e360_matu')
+#     elif basis == 1:  # Actual/actual
+#         return yearfrac.yearfrac(start_date, end_date, 'act_afb')
+#     elif basis == 2:  # Actual/360
+#         return (end_date - start_date).days / 360
+#     elif basis == 3:  # Actual/365
+#         return (end_date - start_date).days / 365
+#     elif basis == 4:  # Eurobond 30/360
+#         return yearfrac.yearfrac(start_date, end_date, '30e360')
 
-    if basis == 0:  # US 30/360
-        return yearfrac.yearfrac(start_date, end_date, '30e360_matu')
-    elif basis == 1:  # Actual/actual
-        return yearfrac.yearfrac(start_date, end_date, 'act_afb')
-    elif basis == 2:  # Actual/360
-        return (end_date - start_date).days / 360
-    elif basis == 3:  # Actual/365
-        return (end_date - start_date).days / 365
-    elif basis == 4:  # Eurobond 30/360
-        return yearfrac.yearfrac(start_date, end_date, '30e360')
-
-    raise xlerrors.ValueExcelError(
-        f'basis must be 0, 1, 2, 3 or 4, got {basis}')
+#     raise xlerrors.ValueExcelError(
+#         f'basis must be 0, 1, 2, 3 or 4, got {basis}')

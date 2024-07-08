@@ -1,6 +1,6 @@
 import copy
 import gzip
-import jsonpickle
+import jsonpickle # TEMP - comment out for production
 import logging
 import os
 from dataclasses import dataclass, field
@@ -22,7 +22,10 @@ class Model():
 
     def set_cell_value(self, address, value):
         """Sets a new value for a specified cell."""
+        print(f"set_cell_value  address: {address} value: {value}")
+
         if address in self.defined_names:
+            print("Address is a defined name")
             if isinstance(self.defined_names[address], xltypes.XLCell):
                 address = self.defined_names[address].address
 
@@ -46,7 +49,10 @@ class Model():
             )
 
     def get_cell_value(self, address):
+        print(f"GET_cell_value  address: {address}")
+
         if address in self.defined_names:
+            print(f"GET_cell_value address is defined name")
             if isinstance(self.defined_names[address], xltypes.XLCell):
                 address = self.defined_names[address].address
 
@@ -150,6 +156,13 @@ class Model():
             and all(defined_names_comparison)
         )
 
+def clean_cell_addr(cell_addr:str):
+    if "!" in cell_addr:
+        sheet, cell = cell_addr.split("!")
+        sheet = sheet.replace("'", "")
+        return f"{sheet}!{cell}"
+    else:
+        return cell_addr
 
 class ModelCompiler:
     """Excel Workbook Data Model Compiler
@@ -205,6 +218,7 @@ class ModelCompiler:
                     input_dict[item],
                     sheet_name=default_sheet
                 )
+                print(f"read_and_parse_dict Formula = {formula}") # TEMP
                 cell = xltypes.XLCell(
                     cell_address, None,
                     formula=formula)
@@ -221,6 +235,7 @@ class ModelCompiler:
             self.model.build_code()
 
         return self.model
+    
 
     def build_defined_names(self):
         """Add defined ranges to model."""
@@ -231,10 +246,16 @@ class ModelCompiler:
             # a cell has an address like; Sheet1!A1
             if ':' not in cell_address:
                 if cell_address not in self.model.cells:
-                    logging.warning(
-                        f"Defined name {name} refers to empty cell "
-                        f"{cell_address}. Is not being loaded.")
-                    continue
+                    cell_address = clean_cell_addr(cell_address)
+                    if cell_address not in self.model.cells:
+                        logging.warning(
+                            f"Defined name {name} refers to empty cell "
+                            f"{cell_address}. Is not being loaded.")
+                        continue
+                    else:
+                        if self.model.cells[cell_address] is not None:
+                            self.model.defined_names[name] = \
+                                self.model.cells[cell_address]
 
                 else:
                     if self.model.cells[cell_address] is not None:
@@ -265,8 +286,12 @@ class ModelCompiler:
                 if any(isinstance(el, list) for el in defn.cells):
                     for column in defn.cells:
                         for row_address in column:
-                            self.model.cells[row_address].defined_names.append(
-                                name)
+                            try:
+                                self.model.cells[row_address].defined_names.append(name)
+                            except KeyError as e:
+                                pass
+                                # This typically occurs where we have a blank cell in a named range, we ignore this
+                                # TODO: Check if we need to create a cell...
                 else:
                     # programmer error
                     message = "This isn't a dim2 array. {}".format(name)
@@ -274,7 +299,7 @@ class ModelCompiler:
                     raise Exception(message)
             else:
                 message = (
-                    f"Trying to link cells for {name}, but got unkown "
+                    f"Trying to link cells for {name}, but got unknown "
                     f"type {type(defn)}"
                 )
                 logging.error(message)
@@ -282,6 +307,7 @@ class ModelCompiler:
 
     def build_ranges(self, default_sheet=None):
         for formula in self.model.formulae:
+            print(f"build_ranges formula: {formula}")
             associated_cells = set()
             for range in self.model.formulae[formula].terms:
                 if ":" in range:
